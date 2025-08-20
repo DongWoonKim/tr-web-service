@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <title>도서 검색</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <script src="https://code.jquery.com/jquery-3.7.1.js" crossorigin="anonymous"></script>
+  <script th:src="@{/js/search.js}"></script>
+  <style>
+    :root { --bg:#0f1115; --card:#161922; --text:#e9edf1; --muted:#9aa4af; --brand:#5aa2ff; --line:#212636; }
+    *{box-sizing:border-box} html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:"Noto Sans KR",system-ui,Segoe UI,Roboto,Arial,sans-serif}
+    .shell{max-width:1100px;margin:28px auto;padding:0 16px}
+    .header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px}
+    .title{font-size:22px;font-weight:700}
+    .meta{color:var(--muted);font-size:13px}
+
+    .searchbar{display:grid;grid-template-columns:1fr auto;gap:10px;margin:12px 0}
+    .input{width:100%;padding:12px 14px;border-radius:12px;border:1px solid var(--line);background:#121621;color:var(--text);font-size:14px}
+    .btn{padding:12px 16px;border-radius:12px;border:1px solid var(--line);background:#1a2030;color:var(--text);cursor:pointer}
+    .btn:disabled{opacity:.6;cursor:not-allowed}
+    .hint{color:var(--muted);font-size:12px;line-height:1.5;margin-top:6px}
+
+    .chips{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+    .chip{font-size:12px;padding:6px 10px;border-radius:999px;background:#15233a;border:1px solid #1e3864;color:#9cc2ff;cursor:pointer}
+    .chip:hover{filter:brightness(1.1)}
+
+    .toolbar{display:flex;align-items:center;gap:10px;margin:12px 0}
+    .select{appearance:none;background:#121621;border:1px solid var(--line);color:var(--text);border-radius:10px;padding:8px 12px;font-size:13px}
+
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;margin-top:12px}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;display:flex;gap:12px;min-height:120px}
+    .thumb{width:68px;height:96px;border-radius:8px;background:#0c0e13;border:1px solid var(--line);object-fit:cover}
+    .card-body{display:flex;flex-direction:column;gap:6px;min-width:0}
+    .book-title{font-size:16px;font-weight:700;line-height:1.25;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+    .book-sub{color:var(--muted);font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .book-meta{display:flex;gap:10px;color:var(--muted);font-size:12px}
+    .isbn{color:var(--brand);font-weight:600;font-size:12px}
+
+    .loading{display:none;align-items:center;justify-content:center;gap:10px;padding:14px;color:var(--muted)}
+    .spinner{width:18px;height:18px;border:3px solid #2a3144;border-top-color:#5aa2ff;border-radius:50%;animation:spin 1s linear infinite}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .empty{display:none;padding:24px;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:12px;background:#121621;margin-top:12px}
+
+    .footerbar{display:flex;justify-content:center;margin:16px 0}
+    .loadmore{display:none}
+  </style>
+</head>
+<body>
+<div class="shell">
+  <div class="header">
+    <div class="title">도서 검색</div>
+    <div class="meta"><span id="metaText">검색어를 입력해 주세요</span></div>
+  </div>
+
+  <div class="searchbar">
+    <input id="q" class="input" type="text" placeholder="예) java tdd|-python  (OR: |, NOT: -)" />
+    <button id="searchBtn" class="btn">검색</button>
+  </div>
+  <div class="hint">
+    • 공백 = AND / OR는 <b>|</b> 사용(자동 인코딩) / 제외는 <b>-</b><br/>
+    예) <code>java tdd|-python</code>, <code>spring|kotlin -legacy</code>
+  </div>
+
+  <div>
+    <div class="meta" style="margin-top:8px;">인기 검색어 TOP10</div>
+    <div id="popular" class="chips"></div>
+  </div>
+
+  <div class="toolbar">
+    <select id="pageSize" class="select">
+      <option value="10" selected>10개씩</option>
+      <option value="20">20개씩</option>
+      <option value="30">30개씩</option>
+    </select>
+    <button id="refreshBtn" class="btn">새로고침</button>
+  </div>
+
+  <div id="grid" class="grid"></div>
+  <div id="empty" class="empty">검색 결과가 없습니다.</div>
+
+  <div id="loading" class="loading">
+    <div class="spinner"></div> 불러오는 중…
+  </div>
+
+  <div class="footerbar">
+    <button id="loadMore" class="btn loadmore">더 보기</button>
+  </div>
+</div>
+
+<!-- Edge(Gateway) URL 주입 -->
+<input type="hidden" id="edgeServiceUrl" th:value="${edgeServiceUrl}" />
+
+</body>
+</html>
