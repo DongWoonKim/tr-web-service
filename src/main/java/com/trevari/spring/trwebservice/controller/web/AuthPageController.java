@@ -1,4 +1,4 @@
-package com.trevari.spring.trwebservice.web;
+package com.trevari.spring.trwebservice.controller.web;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;

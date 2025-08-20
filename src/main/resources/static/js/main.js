@@ -127,13 +127,26 @@ $(document).ready(function () {
             const url = `${config.api}?page=${state.page}&size=${state.size}`;
             console.log('[FETCH]', url);
 
-            $.getJSON(url)
-                .done(handleFetchSuccess)
-                .fail(handleFetchError)
-                .always(() => {
+            $.ajax({
+                url: url,
+                method: 'GET',
+                dataType: 'json',
+                success: handleFetchSuccess,
+                error: function (xhr, textStatus, errorThrown) {
+                    console.log('xhr.status :: ', xhr.status);
+                    if (xhr.status === 419) {
+                        // 토큰 만료 처리 (예: 재로그인 페이지로)
+                        handleTokenExpiration();
+                        return;
+                    }
+                    // 기존 에러 핸들러 호출
+                    handleFetchError(xhr, textStatus, errorThrown);
+                },
+                complete: function () {
                     state.isLoading = false;
                     ui.hideLoading();
-                });
+                }
+            });
         }
 
         // 데이터 요청 성공 시 처리

@@ -1,12 +1,8 @@
 $(document).ready(() => {
-    const EDGE_SERVICE_URL = $('#edgeServiceUrl').val();
-    console.log("EDGE_SERVICE_URL:", EDGE_SERVICE_URL);
-
-    // setupAjax();
-    loginClicked(EDGE_SERVICE_URL);
+    loginClicked();
 });
 
-let loginClicked = (EDGE_SERVICE_URL) => {
+let loginClicked = () => {
     $('#login').click(() => {
         let userId = $('#user_id').val();
         let password = $('#password').val();
@@ -18,7 +14,7 @@ let loginClicked = (EDGE_SERVICE_URL) => {
 
         $.ajax({
             type: 'POST',
-            url: EDGE_SERVICE_URL + '/api/auth/sessions', // 서버의 엔드포인트 URL
+            url: '/auth/sessions', // 서버의 엔드포인트 URL
             data: JSON.stringify(formData), // 데이터를 JSON 형식으로 변환
             contentType: 'application/json; charset=utf-8', // 전송 데이터의 타입
             dataType: 'json', // 서버에서 받을 데이터의 타입

@@ -143,10 +143,22 @@ $(document).ready(function() {
             this.setLoading(true);
             const url = `${this.api.SEARCH}?q=${encodeURIComponent(q)}&page=${this.state.page}&size=${this.state.size}`;
 
-            $.getJSON(url)
-                .done(data => this.renderResults(data, isFirst)) // 성공 시 렌더링 함수 호출
-                .fail(this.handleAjaxError.bind(this))
-                .always(() => this.setLoading(false));
+            $.ajax({
+                url: url,
+                method: 'GET',
+                dataType: 'json',
+                success: (data) => this.renderResults(data, isFirst),
+                error: (xhr, textStatus, errorThrown) => {
+                    console.log('xhr.status :: ', xhr.status);
+                    if (xhr.status === 419) {
+                        // 토큰 만료 처리 (재발급/재로그인 등)
+                        handleTokenExpiration(); // 전역/상위 스코프에 이미 정의되어 있어야 함
+                        return;
+                    }
+                    this.handleAjaxError(xhr, textStatus, errorThrown);
+                },
+                complete: () => this.setLoading(false)
+            });
         },
 
         // AJAX 성공 시 결과를 화면에 렌더링하는 역할만 담당
@@ -191,6 +203,15 @@ $(document).ready(function() {
                 .done(list => {
                     const chipsHtml = list.map(k => `<span class="chip" data-k="${k}"># ${k}</span>`).join('');
                     this.elements.popular.html(chipsHtml);
+                })
+                .fail((xhr, textStatus, errorThrown) => {
+                    console.log('xhr.status :: ', xhr.status);
+                    if (xhr.status === 419) {
+                        // 토큰 만료 처리 (예: 재로그인 페이지로)
+                        handleTokenExpiration();
+                        return;
+                    }
+                    console.error("인기 검색어 요청 중 오류가 발생했습니다.", textStatus, errorThrown);
                 });
         },
 

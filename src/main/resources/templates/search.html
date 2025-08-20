@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;600;700&display=swap" rel="stylesheet">
   <script src="https://code.jquery.com/jquery-3.7.1.js" crossorigin="anonymous"></script>
+  <script th:src="@{/js/common.js}"></script>
   <script th:src="@{/js/search.js}"></script>
   <style>
     :root { --bg:#0f1115; --card:#161922; --text:#e9edf1; --muted:#9aa4af; --brand:#5aa2ff; --line:#212636; }
@@ -51,6 +52,10 @@
   <div class="header">
     <div class="title">도서 검색</div>
     <div class="meta"><span id="metaText">검색어를 입력해 주세요</span></div>
+    <div style="display:flex; align-items:center; gap:10px;">
+      <button class="btn" onclick="location.href='/'">도서목록 조회</button>
+      <button class="btn">로그아웃</button>
+    </div>
   </div>
 
   <div class="searchbar">

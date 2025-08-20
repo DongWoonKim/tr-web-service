@@ -1,184 +1,112 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>로그인</title>
+
   <script src="https://code.jquery.com/jquery-3.7.1.js" crossorigin="anonymous"></script>
   <script th:src="@{/js/login.js}"></script>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+
   <style>
-    /* 기본 스타일 및 폰트 */
-    body {
-      font-family: 'Noto Sans KR', sans-serif;
-      background-color: #f0f2f5;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      margin: 0;
-      padding: 20px;
-      box-sizing: border-box;
+    :root {
+      --bg:#0f1115; --panel:#161922; --text:#e9edf1; --muted:#9aa4af;
+      --brand:#5aa2ff; --line:#212636;
     }
-
-    .login-container {
-      background-color: #ffffff;
-      padding: 40px;
-      border-radius: 12px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-      width: 100%;
-      max-width: 450px; /* 회원가입 폼과 동일하게 최대 너비 설정 */
-      text-align: center;
-      box-sizing: border-box;
+    * { box-sizing: border-box; }
+    html,body { margin:0; padding:0; background:var(--bg); color:var(--text);
+      font-family:"Noto Sans KR",system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
     }
+    a { color:inherit; text-decoration:none; }
 
-    h2 {
-      color: #333;
-      margin-bottom: 30px;
-      font-weight: 700;
-      font-size: 28px;
+    .shell { max-width: 520px; margin: 48px auto; padding: 0 16px; }
+    .card  { background:var(--panel); border:1px solid var(--line); border-radius:16px; padding:28px; box-shadow:0 6px 18px rgba(0,0,0,.18); }
+
+    .header { display:flex; align-items:center; justify-content:space-between; margin-bottom:18px; }
+    .title  { font-size:22px; font-weight:700; }
+    .meta   { font-size:13px; color:var(--muted); }
+
+    .form  { display:flex; flex-direction:column; gap:14px; }
+    .field { display:flex; flex-direction:column; gap:8px; }
+    label  { font-size:13px; color:var(--muted); }
+
+    input[type="text"], input[type="password"]{
+      width:100%; padding:12px 14px; border-radius:12px; background:#10131b; color:var(--text);
+      border:1px solid var(--line); font-size:15px; outline:none;
+      transition:border-color .15s ease, box-shadow .15s ease;
     }
+    input::placeholder { color:#7b8490; }
+    input:focus { border-color:#2a3144; box-shadow:0 0 0 3px rgba(90,162,255,.15); }
 
-    .form-group {
-      margin-bottom: 20px;
-      text-align: left;
+    .btn {
+      width:100%; display:inline-flex; align-items:center; justify-content:center; gap:8px;
+      padding:13px 16px; border-radius:12px; border:1px solid #29405e;
+      background:linear-gradient(180deg,#20314a 0%,#1a2a41 100%);
+      color:var(--text); font-weight:700; letter-spacing:.2px; cursor:pointer;
+      transition:transform .12s ease, filter .12s ease;
+      margin-top:6px;
     }
+    .btn:hover  { transform:translateY(-1px); filter:brightness(1.05); }
+    .btn:active { transform:translateY(0);     filter:brightness(.98); }
 
-    label {
-      display: block;
-      margin-bottom: 8px;
-      color: #555;
-      font-weight: 500;
-      font-size: 15px;
-    }
+    .row { margin-top:14px; text-align:center; font-size:13px; color:var(--muted); }
+    .row a { color:#9cc2ff; border-bottom:1px dashed #2a3e64; }
+    .row a:hover { filter:brightness(1.1); }
 
-    input[type="text"],
-    input[type="password"] {
-      width: 100%;
-      padding: 12px 15px;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      box-sizing: border-box;
-      font-size: 16px;
-      color: #333;
-      transition: border-color 0.3s ease, box-shadow 0.3s ease;
-    }
+    .alert { margin-top:10px; padding:10px 12px; border-radius:10px; font-size:13px; display:none; border:1px solid; }
+    .alert.error   { color:#ff9a9a; border-color:#3a2020; background:#1a1212; }
+    .alert.success { color:#a5f3c6; border-color:#1f3b2a; background:#102017; }
 
-    input[type="text"]:focus,
-    input[type="password"]:focus {
-      border-color: #007bff;
-      box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
-      outline: none;
-    }
-
-    input[type="text"]::placeholder,
-    input[type="password"]::placeholder {
-      color: #aaa;
-    }
-
-    input[type="submit"] {
-      width: 100%;
-      padding: 15px;
-      background-color: #007bff;
-      color: #fff;
-      border: none;
-      border-radius: 8px;
-      font-size: 18px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background-color 0.3s ease, transform 0.2s ease;
-      margin-top: 20px;
-    }
-
-    input[type="submit"]:hover {
-      background-color: #0056b3;
-      transform: translateY(-2px);
-    }
-
-    input[type="submit"]:active {
-      transform: translateY(0);
-    }
-
-    .signup-link {
-      margin-top: 25px;
-      font-size: 15px;
-      color: #666;
-    }
-
-    .signup-link a {
-      color: #007bff;
-      text-decoration: none;
-      font-weight: 600;
-      transition: color 0.2s ease;
-    }
-
-    .signup-link a:hover {
-      color: #0056b3;
-      text-decoration: underline;
-    }
-
-    /* 반응형 디자인 */
-    @media (max-width: 600px) {
-      .login-container {
-        padding: 30px;
-        margin: 10px;
-      }
-
-      h2 {
-        font-size: 24px;
-        margin-bottom: 25px;
-      }
-
-      input[type="text"],
-      input[type="password"] {
-        padding: 10px 12px;
-        font-size: 15px;
-      }
-
-      input[type="submit"] {
-        padding: 13px;
-        font-size: 16px;
-      }
-      .signup-link {
-        margin-top: 20px;
-        font-size: 14px;
-      }
-    }
-
-    @media (max-width: 400px) {
-      .login-container {
-        padding: 20px;
-      }
-
-      h2 {
-        font-size: 22px;
-        margin-bottom: 20px;
-      }
-    }
+    @media (max-width:480px){ .card{padding:20px;border-radius:14px;} .title{font-size:20px;} }
   </style>
 </head>
 <body>
-<div class="login-container">
-  <input type="hidden" id="edgeServiceUrl" th:value="${edgeServiceUrl}" />
 
-  <h2>로그인</h2>
-  <div>
-    <div class="form-group">
-      <label for="user_id">아이디</label>
-      <input type="text" id="user_id" placeholder="아이디를 입력하세요" required>
+<!-- Edge URL 주입 -->
+<input type="hidden" id="edgeServiceUrl" th:value="${edgeServiceUrl}" />
+
+<div class="shell">
+  <div class="card">
+    <div class="header">
+      <div class="title">로그인</div>
+      <div class="meta">TR-STORE 계정으로 로그인합니다</div>
     </div>
 
-    <div class="form-group">
-      <label for="password">비밀번호</label>
-      <input type="password" id="password" placeholder="비밀번호를 입력하세요" required>
+    <div class="form">
+      <div class="field">
+        <label for="user_id">아이디</label>
+        <input type="text" id="user_id" placeholder="아이디를 입력하세요" required />
+      </div>
+
+      <div class="field">
+        <label for="password">비밀번호</label>
+        <input type="password" id="password" placeholder="비밀번호를 입력하세요" required />
+      </div>
+
+      <button id="login" type="button" class="btn">로그인</button>
+
+      <div id="alertError" class="alert error"></div>
+      <div id="alertSuccess" class="alert success"></div>
+
+      <div class="row">
+        아직 회원이 아니신가요? <a th:href="@{/users/join}">회원가입</a>
+      </div>
     </div>
-
-    <input id="login" type="submit" value="로그인">
-  </div>
-
-  <div class="signup-link">
-    아직 회원이 아니신가요? <a th:href="@{/users/join}">회원가입</a>
   </div>
 </div>
+
+<script>
+  // 선택: login.js에서 실패/성공 시 아래 함수 호출해서 메시지 보여줄 수 있음
+  window.showLoginError = function (msg) {
+    $('#alertSuccess').hide();
+    $('#alertError').text(msg || '로그인 중 오류가 발생했습니다.').show();
+  };
+  window.showLoginSuccess = function (msg) {
+    $('#alertError').hide();
+    $('#alertSuccess').text(msg || '로그인 성공').show();
+  };
+</script>
+
 </body>
 </html>
