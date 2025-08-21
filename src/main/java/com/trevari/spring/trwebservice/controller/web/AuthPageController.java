@@ -17,13 +17,13 @@ public class AuthPageController {
     @GetMapping("/join")
     public String joinPage(Model model) {
         model.addAttribute("edgeServiceUrl", edgeServiceUrl);
-        return "/auth/join";
+        return "auth/join";
     }
 
     @GetMapping("/login")
     public String loginPage(Model model) {
         model.addAttribute("edgeServiceUrl", edgeServiceUrl);
-        return "/auth/login";
+        return "auth/login";
     }
 
 }

@@ -11,7 +11,7 @@ $(document).ready(function() {
          * - 고정 설정값과 동적 상태값을 정의합니다.
          */
         config: {
-            edgeUrl: $('#edgeServiceUrl').val() || 'http://localhost:9000',
+            edgeUrl: 'http://localhost:9000',
             selectors: {
                 q: '#q',
                 searchBtn: '#searchBtn',

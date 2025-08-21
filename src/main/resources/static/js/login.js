@@ -23,7 +23,7 @@ let loginClicked = () => {
                 localStorage.setItem('accessToken', response.accessToken);
                 console.log('login get :: ', localStorage.getItem('accessToken'));
                 // 로그인 성공 시 '/' 경로로 이동
-                // window.location.href = '/';
+                window.location.href = '/';
             },
             error: (xhr) => {
                 if (xhr.status === 401) {

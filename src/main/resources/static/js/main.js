@@ -9,7 +9,7 @@ $(document).ready(function () {
          * - 애플리케이션의 고정 값들을 관리합니다.
          */
         const config = {
-            edgeUrl: $('#edgeServiceUrl').val() || 'http://localhost:9000',
+            edgeUrl: 'http://localhost:9000',
             selectors: {
                 grid: '#grid',
                 loading: '#loading',

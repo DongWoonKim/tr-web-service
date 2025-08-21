@@ -16,13 +16,13 @@ public class HomePageController {
     @GetMapping
     public String index(Model model) {
         model.addAttribute("serviceUrl", edgeServiceUrl);
-        return "/main";
+        return "main";
     }
 
     @GetMapping("/search")
     public String search(Model model) {
         model.addAttribute("serviceUrl", edgeServiceUrl);
-        return "/search";
+        return "search";
     }
 
 }
